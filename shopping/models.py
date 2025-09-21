@@ -1,5 +1,11 @@
+from django.core import validators
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from django.core.exceptions import ValidationError
+
+def positiveValidator(val):
+    if (val <= 0):
+        raise ValidationError("Value must be a positive integer")
 
 # Create your models here.
 class Product (models.Model):
@@ -17,8 +23,8 @@ class Category (models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    quantity = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(validators=[positiveValidator])
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[positiveValidator])
     product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="categories")
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -54,7 +60,7 @@ class Order (models.Model):
    id = models.BigAutoField(primary_key=True)
    customer = models.ForeignKey(Customer, on_delete=models.CASCADE,related_name="orders")
    details = models.JSONField()
-   amount = models.DecimalField(max_digits=10, decimal_places=2)
+   amount = models.DecimalField(max_digits=10, decimal_places=2,validators=[positiveValidator])
    created_at = models.DateTimeField(auto_now_add=True)
    deleted_at = models.DateTimeField(null=True,blank=True)
    updated_at = models.DateTimeField(auto_now=True)
@@ -70,7 +76,7 @@ class Order (models.Model):
 
 class OrderCategory (models.Model):
     id = models.BigAutoField(primary_key=True)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(validators=[positiveValidator])
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE,related_name="customer_orders")
