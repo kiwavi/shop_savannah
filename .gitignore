@@ -178,3 +178,6 @@ cython_debug/
 repomix*
 .claude
 *.local.*
+
+#Notes
+notes.txt
