@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'shopping'
+    'shopping',
+     "mozilla_django_oidc",
 ]
 
 MIDDLEWARE = [
@@ -136,6 +137,7 @@ CACHES = {
 }
 
 AUTHENTICATION_BACKENDS = [
+    "mozilla_django_oidc.auth.OIDCAuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -147,4 +149,27 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
     ),
+}
+
+OIDC_RP_CLIENT_ID = config("CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = config("CLIENT_SECRET")
+
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"
+OIDC_OP_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"
+OIDC_OP_USER_ENDPOINT = "https://openidconnect.googleapis.com/v1/userinfo"
+OIDC_OP_JWKS_ENDPOINT = "https://www.googleapis.com/oauth2/v3/certs"
+
+# This is the callback endpoint inside your Django app
+OIDC_CALLBACK_PATH = config("OIDC_CALLBACK_URL")
+
+# After login succeeds, send users here
+LOGIN_REDIRECT_URL = config("LOGIN_REDIRECT_URL")
+OIDC_OP_LOGOUT_ENDPOINT = "https://accounts.google.com/o/oauth2/revoke"
+
+# Optional: enforce HTTPS
+OIDC_VERIFY_SSL = True
+OIDC_RP_SIGN_ALGO = "RS256"
+
+OIDC_AUTH_REQUEST_EXTRA_PARAMS = {
+    "prompt": "login",
 }
