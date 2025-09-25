@@ -137,7 +137,7 @@ CACHES = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    "mozilla_django_oidc.auth.OIDCAuthenticationBackend",
+    "shopping.auth.customerExtendedOIDC",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -173,3 +173,7 @@ OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_AUTH_REQUEST_EXTRA_PARAMS = {
     "prompt": "login",
 }
+OIDC_CREATE_USER = True
+OIDC_USERNAME_ALGO = None
+
+AUTH_USER_MODEL = "shopping.Customer"
