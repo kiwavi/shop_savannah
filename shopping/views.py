@@ -1,8 +1,9 @@
+from typing import override
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from shopping.models import Category, Product
-from shopping.serializers import CategorySerializer, ProductSerializer
+from shopping.models import Category, OrderCategory, Product
+from shopping.serializers import CategorySerializer, OrderCategorySerializer, ProductSerializer
 from rest_framework import viewsets, permissions
 # Create your views here.
 
@@ -24,3 +25,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated,IsSuperAdminOrReadOnly]
+
+class OrderCategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderCategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+       return OrderCategory.objects.filter(customer=self.request.user)
