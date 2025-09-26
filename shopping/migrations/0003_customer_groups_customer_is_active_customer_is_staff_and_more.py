@@ -7,65 +7,95 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('shopping', '0002_category_price_category_quantity_and_more'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("shopping", "0002_category_price_category_quantity_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customer',
-            name='groups',
-            field=models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups'),
+            model_name="customer",
+            name="groups",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.group",
+                verbose_name="groups",
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='is_active',
+            model_name="customer",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='is_staff',
+            model_name="customer",
+            name="is_staff",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='is_superuser',
-            field=models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status'),
+            model_name="customer",
+            name="is_superuser",
+            field=models.BooleanField(
+                default=False,
+                help_text="Designates that this user has all permissions without explicitly assigning them.",
+                verbose_name="superuser status",
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='last_login',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='last login'),
+            model_name="customer",
+            name="last_login",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="last login"
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='password',
-            field=models.CharField(default='mayai', max_length=128, verbose_name='password'),
+            model_name="customer",
+            name="password",
+            field=models.CharField(
+                default="mayai", max_length=128, verbose_name="password"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='customer',
-            name='user_permissions',
-            field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions'),
+            model_name="customer",
+            name="user_permissions",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Specific permissions for this user.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.permission",
+                verbose_name="user permissions",
+            ),
         ),
         migrations.AlterField(
-            model_name='category',
-            name='price',
-            field=models.DecimalField(decimal_places=2, max_digits=10, validators=[shopping.models.positiveValidator]),
+            model_name="category",
+            name="price",
+            field=models.DecimalField(
+                decimal_places=2,
+                max_digits=10,
+                validators=[shopping.models.positiveValidator],
+            ),
         ),
         migrations.AlterField(
-            model_name='category',
-            name='quantity',
+            model_name="category",
+            name="quantity",
             field=models.IntegerField(validators=[shopping.models.positiveValidator]),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='amount',
-            field=models.DecimalField(decimal_places=2, max_digits=10, validators=[shopping.models.positiveValidator]),
+            model_name="order",
+            name="amount",
+            field=models.DecimalField(
+                decimal_places=2,
+                max_digits=10,
+                validators=[shopping.models.positiveValidator],
+            ),
         ),
         migrations.AlterField(
-            model_name='ordercategory',
-            name='quantity',
+            model_name="ordercategory",
+            name="quantity",
             field=models.IntegerField(validators=[shopping.models.positiveValidator]),
         ),
     ]

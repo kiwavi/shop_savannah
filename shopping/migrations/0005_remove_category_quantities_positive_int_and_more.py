@@ -6,16 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shopping', '0004_alter_customer_phone_number'),
+        ("shopping", "0004_alter_customer_phone_number"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='category',
-            name='quantities_positive_int',
+            model_name="category",
+            name="quantities_positive_int",
         ),
         migrations.AddConstraint(
-            model_name='category',
-            constraint=models.CheckConstraint(condition=models.Q(('quantity__gte', 0)), name='quantities_positive_int'),
+            model_name="category",
+            constraint=models.CheckConstraint(
+                condition=models.Q(("quantity__gte", 0)), name="quantities_positive_int"
+            ),
         ),
     ]

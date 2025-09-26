@@ -16,8 +16,57 @@ django-phonenumber-field = "^8.1.0"
 phonenumbers = "^9.0.14"
 mozilla-django-oidc = "^4.0.1"
 celery = "^5.5.3"
+black = "^25.9.0"
 
+[tool.flake8]
+max-line-length = 88
+extend-ignore = [
+    "E203",  # whitespace before ':' (conflicts with black)
+    "W503",  # line break before binary operator
+    "E501",  # line too long (handled by max-line-length)
+    "C901",  # too complex (we'll handle complexity separately)
+    "F401",  # unused imports (sometimes needed for Django)
+    "F841",  # unused variable (sometimes needed for debugging)
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    ".venv",
+    "venv",
+    "env",
+    ".env",
+    ".tox",
+    "dist",
+    "build",
+    "*.egg-info",
+    ".eggs",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".hypothesis",
+    "node_modules",
+    "static",
+    "media",
+    "docs",
+]
+select = [
+    "E",   # PEP8 errors
+    "W",   # PEP8 warnings
+    "F",   # PyFlakes codes
+    "C",   # McCabe complexity
+    "B",   # Bugbear (security issues)
+    "N",   # Naming conventions
+]
+max-complexity = 10
+per-file-ignores = [
+    "*/migrations/*:E501,N802,N806",
+    "settings.py:W0613,N812",
+    "urls.py:N812",
+]
+show-source = true
 
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.3.0"
 
 [build-system]
 requires = ["poetry-core"]

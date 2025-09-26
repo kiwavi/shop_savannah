@@ -6,36 +6,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shopping', '0001_initial'),
+        ("shopping", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='category',
-            name='price',
+            model_name="category",
+            name="price",
             field=models.DecimalField(decimal_places=2, default=1, max_digits=10),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='category',
-            name='quantity',
+            model_name="category",
+            name="quantity",
             field=models.IntegerField(default=1),
             preserve_default=False,
         ),
         migrations.AddConstraint(
-            model_name='category',
-            constraint=models.CheckConstraint(condition=models.Q(('quantity__gt', 0)), name='quantities_positive_int'),
+            model_name="category",
+            constraint=models.CheckConstraint(
+                condition=models.Q(("quantity__gt", 0)), name="quantities_positive_int"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='category',
-            constraint=models.CheckConstraint(condition=models.Q(('price__gt', 0)), name='price_positive'),
+            model_name="category",
+            constraint=models.CheckConstraint(
+                condition=models.Q(("price__gt", 0)), name="price_positive"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='order',
-            constraint=models.CheckConstraint(condition=models.Q(('amount__gte', 0)), name='amount_as_positive'),
+            model_name="order",
+            constraint=models.CheckConstraint(
+                condition=models.Q(("amount__gte", 0)), name="amount_as_positive"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='ordercategory',
-            constraint=models.CheckConstraint(condition=models.Q(('quantity__gt', 0)), name='quantity_positive_int'),
+            model_name="ordercategory",
+            constraint=models.CheckConstraint(
+                condition=models.Q(("quantity__gt", 0)), name="quantity_positive_int"
+            ),
         ),
     ]

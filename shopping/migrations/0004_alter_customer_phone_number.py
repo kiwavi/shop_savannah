@@ -7,13 +7,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shopping', '0003_customer_groups_customer_is_active_customer_is_staff_and_more'),
+        (
+            "shopping",
+            "0003_customer_groups_customer_is_active_customer_is_staff_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customer',
-            name='phone_number',
-            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, null=True, region='KE', unique=True),
+            model_name="customer",
+            name="phone_number",
+            field=phonenumber_field.modelfields.PhoneNumberField(
+                blank=True, max_length=128, null=True, region="KE", unique=True
+            ),
         ),
     ]
