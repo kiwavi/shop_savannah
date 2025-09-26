@@ -31,7 +31,7 @@ class OrderCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-       return OrderCategory.objects.filter(customer=self.request.user)
+       return OrderCategory.objects.filter(customer=self.request.user,order__isnull=True)
 
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
