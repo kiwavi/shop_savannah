@@ -6,6 +6,8 @@ import logging
 from decouple import config
 import json
 
+from shopping.send_sms import send_sms
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,4 +38,26 @@ def send_email(self, order_id):
         return
     except Exception as exception:
         logger.error(f"Email for order {order_id} has failed: {str(exception)}")
+        raise self.retry(exc=exception, countdown=60)
+
+
+@shared_task(bind=True, max_retries=10)
+def send_new_order_sms(self, order_id):
+    order = None
+
+    try:
+        order = Order.objects.get(id=order_id)
+
+        send_sms(
+            order.details["phone_number"],
+            f"Hello. You order ID-{order.id}-{order.created_at} has been created successfully. We are currently processing it. ",
+        )
+
+        logger.info(f"SMS for order {order_id} sent")
+
+    except Order.DoesNotExist:
+        logger.error(f"Order id {order_id} not found")
+        return
+    except Exception as exception:
+        logger.error(f"SMS for order {order_id} has failed: {str(exception)}")
         raise self.retry(exc=exception, countdown=60)

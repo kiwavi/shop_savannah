@@ -10,7 +10,7 @@ from rest_framework import serializers
 
 
 from shopping.schemas import OrderDetails
-from shopping.tasks import send_email
+from shopping.tasks import send_email, send_new_order_sms
 from .models import Category, Order, OrderCategory, Product
 
 
@@ -109,6 +109,7 @@ class OrderSerializer(serializers.ModelSerializer):
         # handles creation of orders
         request = self.context["request"]
         customer = request.user
+        created_order = None
 
         with transaction.atomic():
             # lock the order categories pivot values
@@ -200,7 +201,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 fields=["quantity"],
             )
 
-            # send an email to the admin
-            send_email.delay(order.id)
+            transaction.on_commit(lambda: send_email.delay(order.id))
+            transaction.on_commit(lambda: send_new_order_sms.delay(order.id))
 
         return order
