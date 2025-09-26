@@ -163,7 +163,7 @@ class OrderSerializer(serializers.ModelSerializer):
             # update the order categories related to this order
             OrderCategory.objects.filter(id__in=order_category_ids).update(order=order)
 
-            # decrease the amount of each category
+            # decrease the amount of each category. Bulk update
             Category.objects.bulk_update(
                 [
                     Category(
