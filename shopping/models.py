@@ -8,12 +8,17 @@ from django.contrib.auth.models import (
     BaseUserManager,
 )
 
+
 class CustomerManager(BaseUserManager):
-    def create_user(self, email, phone_number=None, password=None, **extra_fields):
+    def create_user(self, email, phone_number=None,
+                    password=None, **extra_fields):
         if not email:
             raise ValueError("Customers must have an email")
         email = self.normalize_email(email)
-        customer = self.model(email=email, phone_number=phone_number, **extra_fields)
+        customer = self.model(
+            email=email,
+            phone_number=phone_number,
+            **extra_fields)
         customer.set_password(password)
         customer.save(using=self._db)
         return customer
@@ -62,7 +67,10 @@ class Category(models.Model):
             models.CheckConstraint(
                 check=models.Q(quantity__gte=0), name="quantities_positive_int"
             ),
-            models.CheckConstraint(check=models.Q(price__gt=0), name="price_positive"),
+            models.CheckConstraint(
+                check=models.Q(
+                    price__gt=0),
+                name="price_positive"),
         ]
 
     def __str__(self):
@@ -72,7 +80,8 @@ class Category(models.Model):
 class Customer(AbstractBaseUser, PermissionsMixin):
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
-    phone_number = PhoneNumberField(region="KE", unique=True, null=True, blank=True)
+    phone_number = PhoneNumberField(
+        region="KE", unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -116,7 +125,11 @@ class OrderCategory(models.Model):
     id = models.BigAutoField(primary_key=True)
     quantity = models.IntegerField(validators=[positiveValidator])
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True)
     customer = models.ForeignKey(
         Customer, on_delete=models.CASCADE, related_name="customer_orders"
     )

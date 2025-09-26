@@ -23,7 +23,9 @@ from mozilla_django_oidc.views import OIDCLogoutView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # If you're intending to use the browsable API you'll probably also want to add REST framework's login and logout views. Add the following to your root urls.py file.
+    # If you're intending to use the browsable API you'll probably also want
+    # to add REST framework's login and logout views. Add the following to
+    # your root urls.py file.
     path("api-auth/", include("rest_framework.urls")),
     path("shopping/", include("shopping.urls")),
     path("oidc/", include("mozilla_django_oidc.urls")),

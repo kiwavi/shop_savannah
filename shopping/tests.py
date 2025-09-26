@@ -55,7 +55,9 @@ class CategoryPriceIsPositive(TestCase):
 
 class CustomerTestPhoneNumber(TestCase):
     def test_customer_phone_number_format(self):
-        customer = Customer(email="dmunyiri12@gmail.com", phone_number="+254742477")
+        customer = Customer(
+            email="dmunyiri12@gmail.com",
+            phone_number="+254742477")
 
         with self.assertRaises(ValidationError):
             customer.full_clean()
@@ -67,7 +69,8 @@ class OrdersTestUniqueIndex(TestCase):
         customer = Customer.objects.create(
             email="dmunyiri12@gmail.com", phone_number="+254742477460"
         )
-        order = Order.objects.create(customer=customer, amount=100, details="[]")
+        order = Order.objects.create(
+            customer=customer, amount=100, details="[]")
         product = Product.objects.create(
             name="Bedroom furniture", description="Stuff that belongs to the bedroom"
         )

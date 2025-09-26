@@ -67,7 +67,25 @@ show-source = true
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.3.0"
+autoflake = "^2.3.1"
+autopep8 = "^2.3.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    | migrations
+    | .venv
+    | venv
+    | build
+    | dist
+)/
+'''

@@ -82,7 +82,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="category",
             name="quantity",
-            field=models.IntegerField(validators=[shopping.models.positiveValidator]),
+            field=models.IntegerField(
+                validators=[
+                    shopping.models.positiveValidator]),
         ),
         migrations.AlterField(
             model_name="order",
@@ -96,6 +98,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="ordercategory",
             name="quantity",
-            field=models.IntegerField(validators=[shopping.models.positiveValidator]),
+            field=models.IntegerField(
+                validators=[
+                    shopping.models.positiveValidator]),
         ),
     ]

@@ -26,7 +26,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class OrderCategorySerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source="category.name", read_only=True)
+    category_name = serializers.CharField(
+        source="category.name", read_only=True)
 
     class Meta:
         model = OrderCategory
@@ -36,7 +37,8 @@ class OrderCategorySerializer(serializers.ModelSerializer):
         try:
             category = Category.objects.get(pk=validated_data["category"].id)
         except ObjectDoesNotExist:
-            raise serializers.ValidationError({"category": "Category not found."})
+            raise serializers.ValidationError(
+                {"category": "Category not found."})
 
         request = self.context["request"]
         customer = request.user
@@ -131,7 +133,8 @@ class OrderSerializer(serializers.ModelSerializer):
             Category.objects.select_for_update().filter(id__in=category_ids_to_lock)
 
             qs = (
-                OrderCategory.objects.filter(order__isnull=True, customer=customer)
+                OrderCategory.objects.filter(
+                    order__isnull=True, customer=customer)
                 .select_related("category")
                 .annotate(
                     order_qty=F("quantity"),
@@ -139,7 +142,8 @@ class OrderSerializer(serializers.ModelSerializer):
                     name=F("category__name"),
                     amount=ExpressionWrapper(
                         F("quantity") * F("category__price"),
-                        output_field=DecimalField(max_digits=12, decimal_places=2),
+                        output_field=DecimalField(
+                            max_digits=12, decimal_places=2),
                     ),
                 )
                 .annotate(
@@ -147,7 +151,9 @@ class OrderSerializer(serializers.ModelSerializer):
                         expression=Sum(F("quantity") * F("category__price")),
                     ),
                     in_stock=Case(
-                        When(category__quantity__gte=F("quantity"), then=Value(True)),
+                        When(
+                            category__quantity__gte=F("quantity"),
+                            then=Value(True)),
                         default=Value(False),
                         output_field=BooleanField(),
                     ),
@@ -168,8 +174,11 @@ class OrderSerializer(serializers.ModelSerializer):
             for result in qs:
                 if not result["in_stock"]:
                     raise serializers.ValidationError(
-                        f"Bad request: {result['name']} has fewer stock than the requested amount. "
-                        f"Available stock: {result['current_quantity']}, requested: {result['order_qty']}."
+                        f"Bad request: {
+                            result['name']} has fewer stock than the requested amount. "
+                        f"Available stock: {
+                            result['current_quantity']}, requested: {
+                            result['order_qty']}."
                     )
 
             order_category_ids = [item["id"] for item in qs]
@@ -182,7 +191,9 @@ class OrderSerializer(serializers.ModelSerializer):
             )
 
             # update the order categories related to this order
-            OrderCategory.objects.filter(id__in=order_category_ids).update(order=order)
+            OrderCategory.objects.filter(
+                id__in=order_category_ids).update(
+                order=order)
 
             # decrease the amount of each category. Bulk update
             Category.objects.bulk_update(
