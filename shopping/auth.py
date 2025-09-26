@@ -8,7 +8,7 @@ class customerExtendedOIDC(OIDCAuthenticationBackend):
         if not email:
             return self.UserModel.objects.none()
         try:
-            return Customer.objects.get(email=email)
+            return Customer.objects.filter(email=email)
         except ObjectDoesNotExist:
             return []
 
