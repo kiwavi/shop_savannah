@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'shopping',
      "mozilla_django_oidc",
+     "celery"
 ]
 
 MIDDLEWARE = [
@@ -178,3 +179,12 @@ OIDC_CREATE_USER = True
 OIDC_USERNAME_ALGO = None
 
 AUTH_USER_MODEL = "shopping.Customer"
+
+# set the celery broker url
+CELERY_BROKER_URL = 'valkey://localhost:6379/0'
+
+# set the celery result backend
+CELERY_RESULT_BACKEND = 'valkey://localhost:6379/0'
+
+# set the celery timezone
+CELERY_TIMEZONE = 'UTC'
