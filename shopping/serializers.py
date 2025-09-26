@@ -22,9 +22,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id","name","description","quantity","price","product"]
 
 class OrderCategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source="category.name", read_only=True)
+
     class Meta:
         model = OrderCategory
-        fields = ["quantity", "category"]
+        fields = ["quantity", "category", "category_name"]
 
     def create(self, validated_data):
         try:
