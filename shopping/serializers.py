@@ -7,6 +7,8 @@ from django.db.models.fields import DecimalField
 from django.db.models.query import Case, When
 from django.db.models.sql.query import F, Value
 from rest_framework import serializers
+
+from shopping.schemas import OrderDetails
 from .models import Category, Order, OrderCategory, Product
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -20,9 +22,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id","name","description","quantity","price","product"]
 
 class OrderCategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source="category.name", read_only=True)
+
     class Meta:
         model = OrderCategory
-        fields = ["quantity", "category"]
+        fields = ["quantity", "category", "category_name"]
 
     def create(self, validated_data):
         try:
@@ -56,9 +60,34 @@ class OrderCategorySerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    details = serializers.JSONField(
+            help_text=(
+                "Enter order details in JSON format. Example:\n"
+                "{\n"
+                '  "phone_number": "+2547XXXXXXXX",\n'
+                '  "address": "Bihi Towers Shop 1, Nairobi",\n'
+                '  "other_details": "Open from 6a.m to 6p.m"\n'
+                "}"
+            ),
+        )
+
     class Meta:
         model = Order
         fields = ["details","amount","created_at"]
+
+
+    def validate_details(self,value):
+        if value is None:
+                    raise serializers.ValidationError("Details field cannot be null.")
+
+        if not isinstance(value, dict):
+                    raise serializers.ValidationError("Details must be a JSON object, e.g. {'phone_number': '+2547...', 'address': 'Nairobi'}.")
+
+        try:
+            check = OrderDetails(**value)
+            return check.dict()
+        except Exception as e:
+            raise serializers.ValidationError(f"Invalid details: {e}")
 
     @override
     def get_fields(self):
@@ -134,7 +163,7 @@ class OrderSerializer(serializers.ModelSerializer):
             # update the order categories related to this order
             OrderCategory.objects.filter(id__in=order_category_ids).update(order=order)
 
-            # decrease the amount of each category
+            # decrease the amount of each category. Bulk update
             Category.objects.bulk_update(
                 [
                     Category(

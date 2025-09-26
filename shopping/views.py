@@ -1,8 +1,10 @@
 from typing import override
+from django.core import serializers
 from django.shortcuts import render
 from django.http import HttpResponse
 
 from shopping.models import Category, Order, OrderCategory, Product
+from shopping.schemas import OrderDetails
 from shopping.serializers import CategorySerializer, OrderCategorySerializer, OrderSerializer, ProductSerializer
 from rest_framework import viewsets, permissions
 # Create your views here.
