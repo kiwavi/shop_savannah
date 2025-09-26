@@ -26,6 +26,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @override
+    def get_queryset(self):
+        return Category.objects.filter(quantity__gt=0)
+
 class OrderCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = OrderCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
