@@ -10,6 +10,7 @@ from rest_framework import serializers
 
 
 from shopping.schemas import OrderDetails
+from shopping.tasks import send_email
 from .models import Category, Order, OrderCategory, Product
 
 
@@ -206,5 +207,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 ],
                 fields=["quantity"],
             )
+
+            # send an email to the admin
+            send_email.delay(order.id)
 
         return order
