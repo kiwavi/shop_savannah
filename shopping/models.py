@@ -89,11 +89,6 @@ class Customer(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(amount__gte=0), name="amount_as_positive"
-            )
-        ]
         indexes = [
             models.Index(fields=['email']),
             models.Index(fields=['phone_number']),
