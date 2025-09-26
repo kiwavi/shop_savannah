@@ -50,7 +50,7 @@ class Category (models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=models.Q(quantity__gt=0),
+                check=models.Q(quantity__gte=0),
                 name="quantities_positive_int"
             ),
             models.CheckConstraint(
