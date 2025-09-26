@@ -17,6 +17,7 @@ phonenumbers = "^9.0.14"
 mozilla-django-oidc = "^4.0.1"
 celery = "^5.5.3"
 black = "^25.9.0"
+redis = "^6.4.0"
 
 [tool.flake8]
 max-line-length = 88

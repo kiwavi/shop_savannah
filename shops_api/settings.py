@@ -179,10 +179,10 @@ OIDC_USERNAME_ALGO = None
 AUTH_USER_MODEL = "shopping.Customer"
 
 # set the celery broker url
-CELERY_BROKER_URL = "valkey://localhost:6379/0"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
 
 # set the celery result backend
-CELERY_RESULT_BACKEND = "valkey://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 # set the celery timezone
 CELERY_TIMEZONE = "UTC"

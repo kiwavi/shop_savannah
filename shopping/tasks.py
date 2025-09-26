@@ -1,26 +1,39 @@
-from logging import config
 from django.core.mail import send_mail
-from rest_framework.relations import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist  # Correct import
 from celery import shared_task
 from shopping.models import Customer, Order
 import logging
+from decouple import config
 
 logger = logging.getLogger(__name__)
 
+
 @shared_task(bind=True, max_retries=3)
 def send_email(self, order_id):
+    admin = None
+    order = None
+
     try:
-        admin = Customer.objects.get(is_superuser=True, is_active=True).first()
+        admin = Customer.objects.filter(is_superuser=True, is_active=True).first()
+        if not admin:
+            logger.error("Activer admin does not exist")
+            return
+
         order = Order.objects.get(id=order_id)
-    except ObjectDoesNotExist as e:
-        logger.error("Failed to send email: %s", e)
-    try:
+
+        # Send email
         send_mail(
-            subject=f"New Order - #{order.id}",
-            message=f"New order has been created. Order id ${order.id}, order details ${order.details}",
+            subject=f"New Order Alert- #{order.id}",
+            message=f"New order alert! Order id {order.id}: Order amount {order.amount}: Order details {order.order_details}",
             from_email=config("DEFAULT_FROM_EMAIL"),
-            recipient_list=admin["email"],
+            recipient_list=[admin.email],
+            fail_silently=False,
         )
+        logger.info(f"Email for order {order_id} sent")
+
+    except Order.DoesNotExist:
+        logger.error(f"Order with id {order_id} does not exist")
+        return  # Don't retry for missing orders
     except Exception as exception:
-        logger.error(f"Failed to send email for order {order_id}: {str(exception)}")
+        logger.error(f"Email for order {order_id} has failed: {str(exception)}")
         raise self.retry(exc=exception, countdown=60)
