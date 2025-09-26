@@ -1,6 +1,8 @@
 from django.test import TestCase
 from shopping.models import Category, Product, Order, OrderCategory, Customer
 from django.core.exceptions import ValidationError
+from rest_framework.test import APITestCase
+from rest_framework import status
 
 # Create your tests here.
 
@@ -88,3 +90,39 @@ class OrdersTestUniqueIndex(TestCase):
         with self.assertRaises(ValidationError):
             order_category_2.full_clean()
             order_category_2.save()
+
+
+class TestOrderCreation(APITestCase):
+    customer = None
+    def setUp(self):
+        self.customer = Customer.objects.create_user(
+            email="customer@customer.com",
+            password="shopperpass1"
+        )
+        customer = self.customer
+        self.client.force_authenticate(user=self.customer)
+
+    def test_create_order_via_api(self):
+        product = Product.objects.create(name="Testproduct",description="Test description")
+        category = Category.objects.create(name="Testcategory1", description="Test category1 description",price=5,quantity=5,product=product)
+        cart = OrderCategory.objects.create(quantity=2,category=category,customer=self.customer)
+
+        url = '/shopping/api/v1/order/'
+        data = {
+            'details': {"phone_number": "0742477460", "address": "Right there"}
+        }
+        response = self.client.post(url, data, format='json')
+        print(response)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_out_of_stock(self):
+        product = Product.objects.create(name="Testproduct",description="Test description")
+        category = Category.objects.create(name="Testcategory1", description="Test category1 description",price=5,quantity=5,product=product)
+        cart = OrderCategory.objects.create(quantity=6,category=category,customer=self.customer)
+
+        url = '/shopping/api/v1/order/'
+        data = {
+            'details': {"phone_number": "0742477460", "address": "Right there"}
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
