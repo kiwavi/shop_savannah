@@ -8,6 +8,7 @@ import json
 
 logger = logging.getLogger(__name__)
 
+
 @shared_task(bind=True, max_retries=3)
 def send_email(self, order_id):
     admin = None
