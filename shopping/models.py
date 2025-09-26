@@ -90,8 +90,8 @@ class Customer(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         indexes = [
-            models.Index(fields=['email']),
-            models.Index(fields=['phone_number']),
+            models.Index(fields=["email"]),
+            models.Index(fields=["phone_number"]),
         ]
 
 
@@ -117,10 +117,7 @@ class Order(models.Model):
                 check=models.Q(amount__gte=0), name="order_amount_as_positive"
             )
         ]
-        indexes = [
-            models.Index(fields=['customer']),
-            models.Index(fields=['amount'])
-        ]
+        indexes = [models.Index(fields=["customer"]), models.Index(fields=["amount"])]
 
 
 class OrderCategory(models.Model):
@@ -149,6 +146,6 @@ class OrderCategory(models.Model):
             ),
         ]
         indexes = [
-            models.Index(fields=['customer', 'order']),
-            models.Index(fields=['category'])
+            models.Index(fields=["customer", "order"]),
+            models.Index(fields=["category"]),
         ]
