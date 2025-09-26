@@ -4,9 +4,9 @@ from celery import shared_task
 from shopping.models import Customer, Order
 import logging
 from decouple import config
+import json
 
 logger = logging.getLogger(__name__)
-
 
 @shared_task(bind=True, max_retries=3)
 def send_email(self, order_id):
@@ -21,10 +21,9 @@ def send_email(self, order_id):
 
         order = Order.objects.get(id=order_id)
 
-        # Send email
         send_mail(
             subject=f"New Order Alert- #{order.id}",
-            message=f"New order alert! Order id {order.id}: Order amount {order.amount}: Order details {order.order_details}",
+            message=f"New order alert! Order id {order.id}: Order amount {order.amount}: Order details {json.dumps(order.details, indent=2)}",
             from_email=config("DEFAULT_FROM_EMAIL"),
             recipient_list=[admin.email],
             fail_silently=False,
@@ -32,8 +31,8 @@ def send_email(self, order_id):
         logger.info(f"Email for order {order_id} sent")
 
     except Order.DoesNotExist:
-        logger.error(f"Order with id {order_id} does not exist")
-        return  # Don't retry for missing orders
+        logger.error(f"Order id {order_id} not found")
+        return
     except Exception as exception:
         logger.error(f"Email for order {order_id} has failed: {str(exception)}")
         raise self.retry(exc=exception, countdown=60)
