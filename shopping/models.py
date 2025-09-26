@@ -88,6 +88,12 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["email"]),
+            models.Index(fields=["phone_number"]),
+        ]
+
 
 class Order(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -108,9 +114,10 @@ class Order(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=models.Q(amount__gte=0), name="amount_as_positive"
+                check=models.Q(amount__gte=0), name="order_amount_as_positive"
             )
         ]
+        indexes = [models.Index(fields=["customer"]), models.Index(fields=["amount"])]
 
 
 class OrderCategory(models.Model):
@@ -137,4 +144,8 @@ class OrderCategory(models.Model):
             models.CheckConstraint(
                 check=models.Q(quantity__gt=0), name="quantity_positive_int"
             ),
+        ]
+        indexes = [
+            models.Index(fields=["customer", "order"]),
+            models.Index(fields=["category"]),
         ]
