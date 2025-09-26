@@ -1,10 +1,9 @@
 import africastalking
 from decouple import config
 
-# Initialize SDK
+
 username = config("AT_USERNAME")
 api_key = config("AT_KEY")
-africastalking.initialize(username, api_key)
 
 
 def format_phone_number(phone_number):
@@ -23,5 +22,6 @@ def format_phone_number(phone_number):
 
 
 def send_sms(phone_number, message):
+    africastalking.initialize(username, api_key)
     sms = africastalking.SMS
     response = sms.send(message, [format_phone_number(phone_number)])
