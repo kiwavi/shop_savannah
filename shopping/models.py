@@ -119,11 +119,12 @@ class Order(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=models.Q(amount__gte=0), name="amount_as_positive"
+                check=models.Q(amount__gte=0), name="order_amount_as_positive"
             )
         ]
         indexes = [
             models.Index(fields=['customer']),
+            models.Index(fields=['amount'])
         ]
 
 
